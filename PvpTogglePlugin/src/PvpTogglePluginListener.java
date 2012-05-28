@@ -1,20 +1,47 @@
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 public class PvpTogglePluginListener extends PluginListener{
-	World norm = etc.getServer().getWorld(0);
-	World ends = etc.getServer().getWorld(1);
-	World nethers = etc.getServer().getWorld(-1);
+	List<String> pvpworlds;
+	List<String> nopvpworlds;
+	List<String> pvptoggleworlds;
+	
 	File f1 = new File("plugins/config");
 	PropertiesFile f = new PropertiesFile("plugins/config/pvptoggle.properties");
+	String pvpworld;
+	String nopvpworld;
+	String pvptoggleworld;
 	boolean usepvpinnether;
 	boolean usepvpinend;
-	boolean usepvpinworld;
 	public void load(){
-		usepvpinnether = f.getBoolean("Use-Pvplist-In-Nether", false);
-		usepvpinend = f.getBoolean("Use-Pvplist-In-End", false);
-		usepvpinworld = f.getBoolean("Use-Pvplist-In-World", true);
+		pvpworld = f.getString("Forced-Pvp-Worlds","world1,world2");
+		nopvpworld = f.getString("No-Pvp-Worlds", "world3,world4");
+		pvptoggleworld = f.getString("Pvp-Toggle-Worlds", "world5,world6");
+		
+		if (!pvpworld.equals("")){
+			if (pvpworld.contains(",")){
+				pvpworlds = Arrays.asList(pvpworld.split(","));
+			}else{
+				pvpworlds.add(pvpworld);
+			}
+		}
+		if (!nopvpworld.equals("")){
+			if (nopvpworld.contains(",")){
+				nopvpworlds = Arrays.asList(nopvpworld.split(","));
+			}else{
+				nopvpworlds.add(nopvpworld);
+			}
+		}
+		if (!pvptoggleworld.equals("")){
+			if (pvptoggleworld.contains(",")){
+				pvptoggleworlds = Arrays.asList(pvptoggleworld.split(","));
+			}else{
+				pvptoggleworlds.add(pvptoggleworld);
+			}
+		}
 	}
 	ArrayList<String> pvp = new ArrayList<String>();
 	
@@ -125,26 +152,18 @@ public class PvpTogglePluginListener extends PluginListener{
 			String defname = d.getName();
 			String attname = a.getName();
 			
-			if (d.getWorld() == norm){
-				if (usepvpinworld == true){
-					if(!pvp.contains(defname)||(!pvp.contains(attname))){
+			if (pvpworlds.contains(d.getWorld().getName())){
+				return false;
+					}
+			
+		if (nopvpworlds.contains(d.getWorld().getName())){
+					return true;
+					}
+		
+		if (pvptoggleworlds.contains(d.getWorld().getName())){
+			if(!pvp.contains(defname)||(!pvp.contains(attname))){
 				return true;
-					}
-					}
-				return false;
-		}else if (d.getWorld() == ends){
-				if (usepvpinend == true){
-					if(!pvp.contains(defname)||(!pvp.contains(attname))){
-					return true;
-					}
-					}
-				return false;
-		}else if (d.getWorld() == nethers){
-				if (usepvpinnether == true){
-					if(!pvp.contains(defname)||(!pvp.contains(attname))){
-					return true;
-					}
-				}
+			}
 				return false;
 		}
 			}
