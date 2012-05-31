@@ -14,12 +14,15 @@ public class PvpTogglePluginListener extends PluginListener{
 	String pvpworld;
 	String nopvpworld;
 	String pvptoggleworld;
-	boolean usepvpinnether;
-	boolean usepvpinend;
+	boolean forcepvpinnether;
+	boolean forcepvpinend;
+	
 	public void load(){
-		pvpworld = f.getString("Forced-Pvp-Worlds","world1,world2");
-		nopvpworld = f.getString("No-Pvp-Worlds", "world3,world4");
-		pvptoggleworld = f.getString("Pvp-Toggle-Worlds", "world5,world6");
+		pvpworld = f.getString("Forced-Pvp-Worlds","world4,world5");
+		nopvpworld = f.getString("No-Pvp-Worlds", "world2,world3");
+		pvptoggleworld = f.getString("Pvp-Toggle-Worlds", "world,world1");
+		forcepvpinnether = f.getBoolean("Force-Pvp-In-Nether",true);
+		forcepvpinend = f.getBoolean("Force-Pvp-In-End",true);
 		
 		if (!pvpworld.equals("")){
 			if (pvpworld.contains(",")){
@@ -151,6 +154,12 @@ public class PvpTogglePluginListener extends PluginListener{
 			Player a = attacker.getPlayer();
 			String defname = d.getName();
 			String attname = a.getName();
+			if (forcepvpinnether && d.getLocation().dimension == -1){
+				return false;
+			}
+			if (forcepvpinend && d.getLocation().dimension == 1){
+				return false;
+			}
 			
 			if (pvpworlds.contains(d.getWorld().getName())){
 				return false;

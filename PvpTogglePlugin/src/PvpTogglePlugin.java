@@ -1,8 +1,8 @@
 	import java.util.logging.Logger;
 public class PvpTogglePlugin extends Plugin{
 	  String name = "PvpTogglePlugin";
-	  String version = "BETA: 1.2.0";
-	  String author = " spenk";
+	  String version = "1.2";
+	  String author = "spenk";
 	  static Logger log = Logger.getLogger("Minecraft");
 
 	  public void initialize()
